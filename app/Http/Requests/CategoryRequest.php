@@ -24,8 +24,8 @@ class CategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'=>'required|max:200',
-            'parent_id'=>'sometimes|integer'
+            'name' => 'required|max:200',
+            'parent_id' => 'sometimes|integer'
         ];
     }
 }

@@ -53,8 +53,8 @@ class UserController extends Controller
                 'success' => true,
                 'payload' => [
                     'access_token' => $tokenResult->accessToken,
-                    'token_type'   => 'Bearer',
-                    'expires_at'   => Carbon::parse($tokenResult->token->expires_at)->toDateTimeString(),
+                    'token_type' => 'Bearer',
+                    'expires_at' => Carbon::parse($tokenResult->token->expires_at)->toDateTimeString(),
                 ],
             ]
         );
