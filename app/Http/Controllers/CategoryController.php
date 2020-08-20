@@ -44,7 +44,7 @@ class CategoryController extends Controller
         return response()->json(
             [
                 'success' => true,
-                'payload' => $category->toArray()
+                'payload' => $category->id,
             ]
         );
     }
@@ -60,16 +60,35 @@ class CategoryController extends Controller
     {
         try {
             $category = Category::findOrFail($category);
+
             return response()->json(['success' => true, 'payload' => $category], 400);
         } catch (ModelNotFoundException $exception) {
-            return response()->json(['success' => false, 'error' => 'Категория не найдена'], 400);
+            return response()->json(['success' => false, 'error' => 'Категория не найдена'], 404);
+        }
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param Category $category
+     *
+     * @return JsonResponse
+     */
+    public function showProducts(Category $category): JsonResponse
+    {
+        try {
+            $products = $category->products()->get();
+
+            return response()->json(['success' => true, 'payload' => $products], 400);
+        } catch (ModelNotFoundException $exception) {
+            return response()->json(['success' => false, 'error' => 'Данные не обнаружены'], 404);
         }
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param Request $request
+     * @param Request  $request
      * @param Category $category
      *
      * @return JsonResponse
@@ -79,10 +98,10 @@ class CategoryController extends Controller
         $updated = $category->fill($request->all())->save();
 
         if ($updated) {
-            return response()->json(['success' => true, 'payload' => []]);
+            return response()->json(['success' => true, 'payload' => $updated], 204);
         }
 
-        return response()->json(['success' => false, 'error' => 'Ошибка'], 500);
+        return response()->json(['success' => false, 'error' => 'Ошибка'], 404);
     }
 
     /**
@@ -96,11 +115,12 @@ class CategoryController extends Controller
     {
         try {
             $category->delete();
-            return response()->json(['success' => true]);
+
+            return response()->json(['success' => true, 'payload' => []], 204);
         } catch (Exception $exception) {
             return response()->json(
                 ['success' => false, 'error' => 'Во время выполнения запроса произошла ошибка'],
-                500
+                400
             );
         }
     }

@@ -40,5 +40,16 @@ Route::group(
         );
     }
 );
-
+/**
+ * @see \App\Http\Controllers\CategoryController
+ */
 Route::apiResource('categories', 'CategoryController')->middleware('auth:api');
+/**
+ * @see \App\Http\Controllers\ProductController
+ */
+Route::apiResource('products', 'ProductController')->middleware('auth:api');
+/**
+ * @see \App\Http\Controllers\CategoryController::showProducts()
+ */
+Route::get('categories/{category}/products', 'CategoryController@showProducts')->name('categories.showproducts')
+    ->middleware('auth:api')->where(['category' => '[0-9]+']);
