@@ -19,7 +19,7 @@ Route::group(
         /**
          * @see UserController::login()
          */
-        Route::post('login', 'UserController@login');
+        Route::post('login', 'UserController@login')->name('login');
         /**
          * @see UserController::register()
          */
@@ -41,4 +41,4 @@ Route::group(
     }
 );
 
-Route::apiResource('categories', 'CategoryController');
+Route::apiResource('categories', 'CategoryController')->middleware('auth:api');

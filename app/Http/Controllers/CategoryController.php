@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Category;
+use App\Http\Requests\CategoryRequest;
+use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 
 class CategoryController extends Controller
 {
@@ -29,13 +31,22 @@ class CategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param Request $request
+     * @param CategoryRequest $request
      *
-     * @return Response
+     * @return JsonResponse
      */
-    public function store(Request $request)
+    public function store(CategoryRequest $request): JsonResponse
     {
-        $category = $request->validate($rules, $params);
+        $category = new Category(
+            ['name' => $request->name, 'parent_id' => $request->parent, 'external_id' => $request->external]
+        );
+        $category->save();
+        return response()->json(
+            [
+                'success' => true,
+                'payload' => $category->toArray()
+            ]
+        );
     }
 
     /**
@@ -43,24 +54,35 @@ class CategoryController extends Controller
      *
      * @param Category $category
      *
-     * @return Response
+     * @return JsonResponse
      */
-    public function show(Category $category)
+    public function show(Category $category): JsonResponse
     {
-
+        try {
+            $category = Category::findOrFail($category);
+            return response()->json(['success' => true, 'payload' => $category], 400);
+        } catch (ModelNotFoundException $exception) {
+            return response()->json(['success' => false, 'error' => 'Категория не найдена'], 400);
+        }
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param Request  $request
+     * @param Request $request
      * @param Category $category
      *
-     * @return Response
+     * @return JsonResponse
      */
-    public function update(Request $request, Category $category)
+    public function update(Request $request, Category $category): ?JsonResponse
     {
+        $updated = $category->fill($request->all())->save();
 
+        if ($updated) {
+            return response()->json(['success' => true, 'payload' => []]);
+        }
+
+        return response()->json(['success' => false, 'error' => 'Ошибка'], 500);
     }
 
     /**
@@ -68,10 +90,18 @@ class CategoryController extends Controller
      *
      * @param Category $category
      *
-     * @return Response
+     * @return JsonResponse
      */
-    public function destroy(Category $category)
+    public function destroy(Category $category): ?JsonResponse
     {
-
+        try {
+            $category->delete();
+            return response()->json(['success' => true]);
+        } catch (Exception $exception) {
+            return response()->json(
+                ['success' => false, 'error' => 'Во время выполнения запроса произошла ошибка'],
+                500
+            );
+        }
     }
 }

@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Category extends Model
 {
+    protected $fillable = ['name', 'parent_id', 'external_id'];
     public function products(): BelongsToMany
     {
         return $this->belongsToMany(Product::class);

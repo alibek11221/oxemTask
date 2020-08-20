@@ -11,16 +11,18 @@ class CreateCategoriesTable extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('categories', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->bigInteger('parent_id');
-            $table->integer('external_id')->nullable();
-            $table->timestamps();
-
-        });
+        Schema::create(
+            'categories',
+            static function (Blueprint $table) {
+                $table->id();
+                $table->string('name');
+                $table->bigInteger('parent_id')->nullable();
+                $table->integer('external_id')->nullable();
+                $table->timestamps();
+            }
+        );
     }
 
     /**
@@ -28,7 +30,7 @@ class CreateCategoriesTable extends Migration
      *
      * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('categories');
     }
