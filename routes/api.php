@@ -43,13 +43,14 @@ Route::group(
 /**
  * @see \App\Http\Controllers\CategoryController
  */
-Route::apiResource('categories', 'CategoryController')->middleware('auth:api');
+Route::apiResource('categories', 'CategoryController');
 /**
  * @see \App\Http\Controllers\ProductController
  */
-Route::apiResource('products', 'ProductController')->middleware('auth:api');
+Route::apiResource('products', 'ProductController');
 /**
  * @see \App\Http\Controllers\CategoryController::showProducts()
  */
-Route::get('categories/{category}/products', 'CategoryController@showProducts')->name('categories.showproducts')
-    ->middleware('auth:api')->where(['category' => '[0-9]+']);
+Route::get('categories/{category}/products', 'CategoryController@showProducts')->name('categories.showproducts')->where(
+    ['category' => '[0-9]+']
+);

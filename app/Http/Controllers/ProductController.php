@@ -13,6 +13,12 @@ use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth:api')->except(['index', 'show']);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -22,8 +28,8 @@ class ProductController extends Controller
      */
     public function index(ProductsIndexRequest $request): JsonResponse
     {
-        $orderby = $request->input('orderby', 'cost');
-        $direction = $request->input('direction', 'ASC');
+        $orderby = $request->input('orderby', 'price');
+        $direction = $request->input('direction', 'DESC');
         $products = Product::orderBy($orderby, $direction)->paginate(50);
 
         return response()->json(['success' => true, 'payload' => $products]);

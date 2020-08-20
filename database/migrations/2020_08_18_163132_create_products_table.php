@@ -18,7 +18,7 @@ class CreateProductsTable extends Migration
             static function (Blueprint $table) {
                 $table->id();
                 $table->string('name');
-                $table->string('description');
+                $table->longText('description')->nullable();
                 $table->decimal('price');
                 $table->integer('quantity');
                 $table->integer('external_id')->nullable();
